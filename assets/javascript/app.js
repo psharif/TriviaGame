@@ -1,9 +1,15 @@
 
+///Variables for Keeping Track of Timers. Score and Count of Questions. 
 var questionTimeOutID;
 var resultTimeOutID; 
 var count = 0; 
+var score = 0; 
+//Plays The Audio At the The End of the Game. 
+var audio = new Audio("assets/sounds/kangaroo-song.mp3");
 
 
+
+/// Kangaroo Questions and Answers and Gifs. 
 var kangarooQuestions = [
 	{ 
 		"question" : "What sport do Kangaroos Play?", 
@@ -49,17 +55,22 @@ displayQuestion(0);
 ///Sets a tiemout for use to answer in a correct amount of time. 
 function displayQuestion(questionIndex){
 
+	/// If the count is greater than the number of elements, display game over. 
+	/// Switch Displays. And get out of the rest of the function. 
 	if(count > kangarooQuestions.length - 1){
 		clearTimeout(resultTimeOutID); 
+		$("#score").text(score); 
 		switchDisplays("#game-over-area", "#result-area");
+		audio.play();
 		return;
 	}
 
-	clearTimeout(resultTimeOutID); 
+	//clearTimeout(resultTimeOutID); 
 	switchDisplays("#question-area", "#result-area");
 
 	///Make sure the question-area has the class of displayed-content
 	if($("#question-area").hasClass("displayed-content")){
+		///Display Question and Answers
 		$("#question-bar").text(kangarooQuestions[questionIndex].question);
 		for(var i = 0; i < kangarooQuestions[questionIndex].answers.length; i++){
 			$("#" + i).text(kangarooQuestions[questionIndex].answers[i]);
@@ -69,11 +80,11 @@ function displayQuestion(questionIndex){
 		console.log("Something isn't right.");
 	}
 
-	//console.log("The Count is " + count);
+	/// Increment Count for the Next Question.
 	count++; 
 
 	///If a user clicks on an answer in the allotted time
-	///Function For Handling user's answer
+	///Function For Handling user's answer.
 	$(".answer").on("click", function(){
 		clearTimeout(resultTimeOutID);
 		checkAnswer(questionIndex, parseInt(this.id));
@@ -118,6 +129,7 @@ function checkAnswer(questionIndex, answerIndex){
 		$("#guess-result").text("You Did Not Answer In Time.");
 	}
 	else if(kangarooQuestions[questionIndex].answers[answerIndex] === kangarooQuestions[questionIndex].correctAnswer){
+		score++; 
 		///If you have the correct answer. Display you are correct
 		///Load appropriate gif. 
 		$("#gif-area").attr("src", kangarooQuestions[questionIndex].rightGif); 
