@@ -7,11 +7,44 @@
 	<link rel="stylesheet" type="text/css" href="assets/css/style.css">
 </head>
 <body>
+	<div class="ui container">
+		<div class="ui grid">
+	  		<div class="sixteen wide column">
+	  			<div class="ui center aligned segment">
 
-	<div class="ui center aligned segment">
-			<h1>Just checking if Semantic UI is set up.</h1>
+	  				<!-- Two Divs that toggle between what is being displayed and what's not-->
+	  				<!-- Div for displaying Question and Answers --> 
+	  				<div id="question-area" class="displayed-content">
+		  				<h1 class="answer-bar">Kangaroo Trivia Game</h1>
+		  				<hr>
+		  				<h2 id="question-bar" class="answer-bar">This is your Question?</h2>
+		  				<div class="answer-section">
+		  					<div class="answer-bar">
+		  						<h2 id="0" class="answer">Question 1</h2>
+		  					</div>
+		  					<div class="answer-bar">
+		  						<h2 id="1" class="answer">Question 2</h2>
+		  				    </div>
+		  				    <div class="answer-bar">
+		  						<h2 id="2" class="answer">Question 3</h2>
+		  					</div>
+		  					<div class="answer-bar">
+		  						<h2 id="3" class="answer">Question 4</h2>
+		  					</div>
+		  				</div>
+	  				</div>
+					<!-- Div For Displaying the Answer and Gif --> 
+	  				<div id="result-area" class="hidden-content">
+	  					<h1 class="answer-bar">And The Answer Is...</h1>
+	  					<h2 id="guess-result" class="answer-bar">You were Almost Right</h2>		
+	  					<img id="gif-area" src="assets/images/hippo.gif"></img>
+	  				</div>
+
+	  			</div>
+	  		</div>
+		</div>
 	</div>
-	
+
 	<!--Script Tag for Jquery and Semantic U--> 
 	<script type="text/javascript" src="https://cdnjs.cloudflare.com/ajax/libs/jquery/3.2.1/jquery.min.js"></script>
 	<script type="text/javascript" src="https://cdnjs.cloudflare.com/ajax/libs/semantic-ui/2.2.13/semantic.min.js"></script>
