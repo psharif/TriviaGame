@@ -1,38 +1,62 @@
 
-var timeOutID;
+var questionTimeOutID;
+var resultTimeOutID; 
+var count = 0; 
 
 
 var kangarooQuestions = [
 	{ 
 		"question" : "What sport do Kangaroos Play?", 
 		"correctAnswer" : "Boxing",
-		"answers" : ["Bowling", "Basketball", "Track", "Boxing"] 
+		"answers" : ["Bowling", "Basketball", "Track", "Boxing"],
+		"rightGif" : "assets/images/buff-kangaroo.gif",
+		"wrongGif" : "assets/images/nuts.gif" 
 	},
 	{
 		"question" : "How Fast Can Kangaroos Hop?", 
 		"correctAnswer" : "20 mph",
-		"answers" : ["20 mph", " 17 mph", "10 mph", "16.43 mph"] 
+		"answers" : ["20 mph", " 17 mph", "10 mph", "16.43 mph"], 
+		"rightGif" : "assets/images/guitar-kangaroo.gif", 
+		"wrongGif" : "assets/images/sleeper-hold.gif" 
 	},
 	{ 
 		"question" : "What is a Female Kangaroo Called?", 
 		"correctAnswer" : "Doe",
-		"answers" : ["Barbara", "Doe", "Jill", "Queen"] 
+		"answers" : ["Barbara", "Doe", "Jill", "Queen"], 
+		"right-gif" : "assets/images/dog-kangaroo.gif",
+		 "wrongGif" : "assets/images/trampoline.gif"
 	},
 	{
 		"question" : "In Which US State Can You See Kangaroos?", 
 		"correctAnswer" : "Virginia",
-		"answers" : ["Texas", "Hawaii", "Virginia", "Montana"] 
+		"answers" : ["Texas", "Hawaii", "Virginia", "Montana"], 
+		"rightGif" : "assets/images/swimming.gif", 
+		"wrongGif" : "assets/images/splash.gif" 
 	},
 	{ 
 		"question" : "What is a group of Kangaroos Called?", 
 		"correctAnswer" : "Mob",
-		"answers" : ["Pack", "Squall", "Mob", "Group"] 
+		"answers" : ["Pack", "Squall", "Mob", "Group"], 
+		"rightGif" : "assets/images/cute.gif", 
+		"wrongGif" : "assets/images/momma.gif"
 	}
 ];
 
+///Starts the Game At 0. 
+displayQuestion(0);
 
-
+///Displays The Question. Listens For onclick for user answer. 
+///Sets a tiemout for use to answer in a correct amount of time. 
 function displayQuestion(questionIndex){
+
+	if(count > kangarooQuestions.length - 1){
+		clearTimeout(resultTimeOutID); 
+		switchDisplays("#game-over-area", "#result-area");
+		return;
+	}
+
+	clearTimeout(resultTimeOutID); 
+	switchDisplays("#question-area", "#result-area");
 
 	///Make sure the question-area has the class of displayed-content
 	if($("#question-area").hasClass("displayed-content")){
@@ -45,29 +69,29 @@ function displayQuestion(questionIndex){
 		console.log("Something isn't right.");
 	}
 
+	//console.log("The Count is " + count);
+	count++; 
+
 	///If a user clicks on an answer in the allotted time
 	///Function For Handling user's answer
 	$(".answer").on("click", function(){
-		console.log(parseInt(this.id));
+		clearTimeout(resultTimeOutID);
 		checkAnswer(questionIndex, parseInt(this.id));
+		return; 
 	});
 
 	///Set a Timeout function to perform a countdown for 5 seconds. 
-	timeOutID = setTimeout(function(){
-		///If a user clicks on an answer in the allotted time
-		///Function For Handling user's answer
-
-		//Won't use 
-		checkAnswer(-1,-1);
-
-	}, 10 * 1000); 
+	questionTimeOutID = setTimeout(function(){
+		clearTimeout(resultTimeOutID);
+		///If a user does not click an answer in the allotted time Question index set to -1.
+		checkAnswer(questionIndex,-1);
+	}, 30 * 1000); 
 }
 
-displayQuestion(3);
-
+////Switches one display from another.
+/// If the question area is displayed, hide it and make result area displayed. (And Vice-Versa).
 function switchDisplays(displayed, hidden){
-	//When a user clicks an answer we switch divs
-	//Hidden area displays none of it's tags 
+
 	$(hidden).removeClass("displayed-Content");
 	$(hidden).addClass("hidden-content");
 	//Displayed area becomes unhidden and displays it's content.
@@ -77,41 +101,42 @@ function switchDisplays(displayed, hidden){
 }
 
 
+///Changes the display from question area to result-area. 
+///Clears Timeout. 
+///Displays appropriate response for correct, incorrect or timeout answers. 
 function checkAnswer(questionIndex, answerIndex){
+
 	switchDisplays("#result-area", "#question-area");
-	///Clears the Timer
-	clearTimeout(timeOutID);
 
-	if(questionIndex === -1){
-		///Display you are wrong. 
+	clearTimeout(questionTimeOutID);
+
+	if(answerIndex === -1){
+		///Load appropriate gif. 
+		$("#gif-area").attr("src", kangarooQuestions[questionIndex].wrongGif); 
+		///If you did not reply in time question index will be -1. 
+		/// Display did not answer in time. 
 		$("#guess-result").text("You Did Not Answer In Time.");
-		return;
 	}
-
-	console.log("The number of the question" + questionIndex); 
-	console.log("The correct answer is " + kangarooQuestions[questionIndex].correctAnswer);
-	console.log("The array of answers is " + kangarooQuestions[questionIndex].answers[answerIndex]);
-
-
-	alert("You have answered Something or Timed Out");
-
-	///If you have the correct answer. Display you are correct
-	if(kangarooQuestions[questionIndex].answers[answerIndex] === kangarooQuestions[questionIndex].correctAnswer){
+	else if(kangarooQuestions[questionIndex].answers[answerIndex] === kangarooQuestions[questionIndex].correctAnswer){
+		///If you have the correct answer. Display you are correct
+		///Load appropriate gif. 
+		$("#gif-area").attr("src", kangarooQuestions[questionIndex].rightGif); 
+		///If you have the correct answer. Display you are correct
 		$("#guess-result").text("You Are Correct.");
 	}
 	else{
-		///Display you are wrong. 
+		///Load appropriate gif. 
+		$("#gif-area").attr("src", kangarooQuestions[questionIndex].wrongGif); 
+		///Display you are wrong.
 		$("#guess-result").text("You Are Wrong.");
 	}
 
+	$("#correct-answer-area").text("The correct answer was " + kangarooQuestions[questionIndex].correctAnswer);
+
+	resultTimeOutID = setTimeout(function(){
+		console.log("The TimeOut is Running");
+		displayQuestion(count); 
+	}, 5 * 1000); 
+
 }
 
-function showQuestion(index){
-	///
-	if($("#question-area").hasClass("displayed-content")){
-		$("#question-bar").text(kangarooQuestions[index].question);
-	}
-	else{
-		console.log("Something isn't right.");
-	}
-}
