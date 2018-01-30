@@ -3,11 +3,39 @@
 var questionTimeOutID;
 var resultTimeOutID; 
 var count = 0; 
-var score = 0; 
+var correctScore = 0;
+var wrongScore = 0;
+var timeCounter = 30; 
+
+/*
+function run() {
+      intervalId = setInterval(decrement, 1000);
+    }
+
+    function decrement() {
+
+      number--;
+
+      $("#show-number").html("<h2>" + number + "</h2>");
+
+
+      if (number === 0) {
+
+        stop();
+
+        alert("Time Up!");
+      }
+    }
+
+    function stop() {
+
+      clearInterval(intervalId);
+    }  
+}
+*/
+
 //Plays The Audio At the The End of the Game. 
 var audio = new Audio("assets/sounds/kangaroo-song.mp3");
-
-
 
 /// Kangaroo Questions and Answers and Gifs. 
 var kangarooQuestions = [
@@ -48,6 +76,10 @@ var kangarooQuestions = [
 	}
 ];
 
+
+
+
+
 ///Starts the Game At 0. 
 displayQuestion(0);
 
@@ -59,7 +91,8 @@ function displayQuestion(questionIndex){
 	/// Switch Displays. And get out of the rest of the function. 
 	if(count > kangarooQuestions.length - 1){
 		clearTimeout(resultTimeOutID); 
-		$("#score").text(score); 
+		$("#correct-score").text(correctScore); 
+		$("#wrong-score").text(wrongScore);
 		switchDisplays("#game-over-area", "#result-area");
 		audio.play();
 		return;
@@ -83,17 +116,21 @@ function displayQuestion(questionIndex){
 	/// Increment Count for the Next Question.
 	count++; 
 
+	///Remove the on click handler from the previous answer button 
+	$(".answer").unbind("click");
+
 	///If a user clicks on an answer in the allotted time
 	///Function For Handling user's answer.
 	$(".answer").on("click", function(){
-		clearTimeout(resultTimeOutID);
+		console.log(this);
+		//clearTimeout(resultTimeOutID);
+		clearTimeout(questionTimeOutID);
 		checkAnswer(questionIndex, parseInt(this.id));
 		return; 
 	});
 
 	///Set a Timeout function to perform a countdown for 5 seconds. 
 	questionTimeOutID = setTimeout(function(){
-		clearTimeout(resultTimeOutID);
 		///If a user does not click an answer in the allotted time Question index set to -1.
 		checkAnswer(questionIndex,-1);
 	}, 30 * 1000); 
@@ -122,6 +159,7 @@ function checkAnswer(questionIndex, answerIndex){
 	clearTimeout(questionTimeOutID);
 
 	if(answerIndex === -1){
+		wrongScore++;
 		///Load appropriate gif. 
 		$("#gif-area").attr("src", kangarooQuestions[questionIndex].wrongGif); 
 		///If you did not reply in time question index will be -1. 
@@ -129,7 +167,7 @@ function checkAnswer(questionIndex, answerIndex){
 		$("#guess-result").text("You Did Not Answer In Time.");
 	}
 	else if(kangarooQuestions[questionIndex].answers[answerIndex] === kangarooQuestions[questionIndex].correctAnswer){
-		score++; 
+		correctScore++; 
 		///If you have the correct answer. Display you are correct
 		///Load appropriate gif. 
 		$("#gif-area").attr("src", kangarooQuestions[questionIndex].rightGif); 
@@ -137,6 +175,7 @@ function checkAnswer(questionIndex, answerIndex){
 		$("#guess-result").text("You Are Correct.");
 	}
 	else{
+		wrongScore++;
 		///Load appropriate gif. 
 		$("#gif-area").attr("src", kangarooQuestions[questionIndex].wrongGif); 
 		///Display you are wrong.
