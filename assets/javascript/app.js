@@ -6,33 +6,8 @@ var count = 0;
 var correctScore = 0;
 var wrongScore = 0;
 var timeCounter = 30; 
+var intervalId; 
 
-/*
-function run() {
-      intervalId = setInterval(decrement, 1000);
-    }
-
-    function decrement() {
-
-      number--;
-
-      $("#show-number").html("<h2>" + number + "</h2>");
-
-
-      if (number === 0) {
-
-        stop();
-
-        alert("Time Up!");
-      }
-    }
-
-    function stop() {
-
-      clearInterval(intervalId);
-    }  
-}
-*/
 
 //Plays The Audio At the The End of the Game. 
 var audio = new Audio("assets/sounds/kangaroo-song.mp3");
@@ -76,7 +51,22 @@ var kangarooQuestions = [
 	}
 ];
 
+function startTimer(){
+	 intervalId = setInterval(decrement, 1000);
+}
 
+function decrement() {
+      timeCounter--;
+      $("#timer").html("<h2>" + timeCounter + "</h2>");
+      if (number === 0) {
+        stop();
+        alert("Time Up!");
+      }
+ }
+
+function stopTimer() {
+     clearInterval(intervalId);
+ } 
 
 
 
@@ -86,7 +76,7 @@ displayQuestion(0);
 ///Displays The Question. Listens For onclick for user answer. 
 ///Sets a tiemout for use to answer in a correct amount of time. 
 function displayQuestion(questionIndex){
-
+	$("#timer").html("<h2>30</h2>");
 	/// If the count is greater than the number of elements, display game over. 
 	/// Switch Displays. And get out of the rest of the function. 
 	if(count > kangarooQuestions.length - 1){
@@ -98,8 +88,15 @@ function displayQuestion(questionIndex){
 		return;
 	}
 
+	//Reset Counter. Start Timer
+	//timeCounter = 30;
+	startTimer();
+	timeCounter = 30;
+
 	//clearTimeout(resultTimeOutID); 
 	switchDisplays("#question-area", "#result-area");
+
+
 
 	///Make sure the question-area has the class of displayed-content
 	if($("#question-area").hasClass("displayed-content")){
@@ -122,6 +119,7 @@ function displayQuestion(questionIndex){
 	///If a user clicks on an answer in the allotted time
 	///Function For Handling user's answer.
 	$(".answer").on("click", function(){
+		stopTimer();
 		console.log(this);
 		//clearTimeout(resultTimeOutID);
 		clearTimeout(questionTimeOutID);
@@ -131,6 +129,7 @@ function displayQuestion(questionIndex){
 
 	///Set a Timeout function to perform a countdown for 5 seconds. 
 	questionTimeOutID = setTimeout(function(){
+		stopTimer();
 		///If a user does not click an answer in the allotted time Question index set to -1.
 		checkAnswer(questionIndex,-1);
 	}, 30 * 1000); 
