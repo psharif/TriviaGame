@@ -187,6 +187,17 @@ function checkAnswer(questionIndex, answerIndex){
 		console.log("The TimeOut is Running");
 		displayQuestion(count); 
 	}, 5 * 1000); 
-
 }
+
+$("#restart-button").on("click", function(){
+	questionTimeOutID = null;
+	resultTimeOutID = null; 
+	count = 0; 
+	correctScore = 0;
+	wrongScore = 0;
+	timeCounter = 30; 
+	intervalId = null; 
+	switchDisplays("#question-area","#game-over-area");
+	displayQuestion(0);
+});
 
